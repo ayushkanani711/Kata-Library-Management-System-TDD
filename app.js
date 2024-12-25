@@ -1,12 +1,18 @@
 const express = require("express");
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;
+const cors = require("cors");
+
 const bookRoutes = require("./routes/bookRoutes");
+const connectToMongo = require("./config/database");
 
 // Create an express app
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+
+connectToMongo();
 
 // Root route
 app.get("/", (req, res) => {
