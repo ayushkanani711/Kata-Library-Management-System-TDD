@@ -1,9 +1,12 @@
 const express = require("express");
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;
+const bookRoutes = require("./routes/bookRoutes");
 
 // Create an express app
 const app = express();
+
+app.use(express.json());
 
 // Root route
 app.get("/", (req, res) => {
@@ -14,8 +17,9 @@ app.get("/", (req, res) => {
 app.get("/api", (req, res) => {
   return res.status(200).send("API is running");
 });
+app.use("/api/books", bookRoutes);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",

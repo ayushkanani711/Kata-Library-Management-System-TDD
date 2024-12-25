@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app"); // Import the app from app.js
+const app = require("../app");
 
 describe("Server Running Check", () => {
   //
@@ -32,7 +32,9 @@ describe("Server Running Check", () => {
       available: true,
       availableCopies: 10,
     };
-    const response = await request(app).post("/api/books").send(book);
+    const response = await request(app)
+      .post("/api/books/addNewBook")
+      .send(book);
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("message");
     expect(response.body.success).toBe(true);
