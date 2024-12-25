@@ -8,4 +8,10 @@ describe("Server Running Check", () => {
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe("Server is running");
   });
+  //
+  test("should respond to the GET request at the /api url", async () => {
+    const response = await request(app).get("/api");
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe("API is running");
+  });
 });
