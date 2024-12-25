@@ -1,13 +1,7 @@
 const request = require("supertest");
-const express = require("express");
+const app = require("../app"); // Import the app from app.js
 
 describe("Server Running Check", () => {
-  let app;
-  beforeAll(() => {
-    // Initialize the express app
-    app = express();
-  });
-
   //
   test("should respond to the GET request at the root url", async () => {
     const response = await request(app).get("/");
