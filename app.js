@@ -9,9 +9,11 @@ const connectToMongo = require("./config/database");
 // Create an express app
 const app = express();
 
+// Middlewares
 app.use(express.json());
 app.use(cors());
 
+// Connect to MongoDB
 connectToMongo();
 
 // Root route

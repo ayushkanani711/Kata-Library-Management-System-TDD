@@ -21,11 +21,12 @@ describe("Server Running Check", () => {
     const response = await request(app).post("/api/non-existent-route");
     expect(response.statusCode).toBe(404);
   });
+});
 
-  //
+describe("Add Book Check", () => {
   test("Should handle POST request", async () => {
     const book = {
-      ISBN: "123456789123",
+      ISBN: "123456789124",
       title: "The Alchemist",
       author: "Paulo Coelho",
       yearOfPublish: 1988,
@@ -36,10 +37,7 @@ describe("Server Running Check", () => {
       .post("/api/books/addNewBook")
       .send(book);
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("message");
     expect(response.body.success).toBe(true);
     expect(response.body.message).toBe("Book added successfully");
   });
-
-  //
 });
