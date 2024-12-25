@@ -14,4 +14,9 @@ describe("Server Running Check", () => {
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe("API is running");
   });
+  //
+  test("should respond 404 for a non-existent route", async () => {
+    const response = await request(app).post("/api/non-existent-route");
+    expect(response.statusCode).toBe(404);
+  });
 });
