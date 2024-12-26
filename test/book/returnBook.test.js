@@ -7,7 +7,7 @@ jest.mock("../../models/BookModel");
 
 describe("Book returning check", () => {
   beforeEach(() => {
-    jest.clearAllMocks(); // Clear mocks before each test
+    jest.clearAllMocks();
   });
 
   // Test case 1
