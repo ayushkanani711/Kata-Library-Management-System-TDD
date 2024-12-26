@@ -34,8 +34,8 @@ describe("View Available Books Check", () => {
 
     const response = await request(app).get("/api/books/viewAvailableBooks");
     expect(response.statusCode).toBe(200);
-    expect(response.body.success).toBe(true);
-    expect(response.body.message).toBe("Available books fetched successfully");
-    expect(response.body.books).toEqual(mockBooks);
+    expect(response.body.status).toBe(true);
+    expect(response.body.message).toBe("Books available");
+    expect(response.body.availableBooks).toEqual(mockBooks);
   });
 });
