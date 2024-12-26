@@ -5,6 +5,7 @@ const AddBookController = async (req, res) => {
     const { ISBN, title, author, yearOfPublish, available, availableCopies } =
       req.body;
 
+    // Validate input
     if (
       ISBN === undefined ||
       title === undefined ||
@@ -19,6 +20,38 @@ const AddBookController = async (req, res) => {
       });
     }
 
+    // Validate input types
+    if (
+      typeof ISBN !== "string" ||
+      typeof title !== "string" ||
+      typeof author !== "string" ||
+      typeof yearOfPublish !== "number" ||
+      typeof available !== "boolean" ||
+      typeof availableCopies !== "number"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Incorrect input type",
+      });
+    }
+
+    // Validate ISBN length
+    if (ISBN.length !== 13) {
+      return res.status(403).json({
+        success: false,
+        message: "ISBN should be 13 characters long",
+      });
+    }
+
+    // Validate copy count
+    if (availableCopies <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Book should have at least 1 copy",
+      });
+    }
+
+    // Check if the book already exists
     const existingBook = await Book.findOne({ ISBN });
     if (existingBook) {
       return res.status(400).json({
@@ -27,6 +60,7 @@ const AddBookController = async (req, res) => {
       });
     }
 
+    // Add the book
     const newBook = await Book.create({
       ISBN,
       title,
@@ -43,6 +77,7 @@ const AddBookController = async (req, res) => {
       });
     }
 
+    // Return success response
     return res.status(201).json({
       success: true,
       message: "Book added successfully",

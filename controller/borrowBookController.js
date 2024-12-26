@@ -6,7 +6,6 @@ const borrowBookController = async (req, res) => {
 
     // Validate input
     if (!ISBN) {
-      console.log("ISBN is required");
       return res.status(403).json({
         status: false,
         message: "ISBN is required",
@@ -16,7 +15,6 @@ const borrowBookController = async (req, res) => {
     // Find the book by ISBN
     const book = await Book.findOne({ ISBN });
     if (!book) {
-      console.log("Book not available in the library");
       return res.status(400).json({
         status: false,
         message: "Book not available in the library",
@@ -25,7 +23,6 @@ const borrowBookController = async (req, res) => {
 
     // Check if the book is available
     if (book.availableCopies <= 0) {
-      console.log("Book stock is not available in the library");
       return res.status(400).json({
         status: false,
         message: "Book stock is not available in the library",
