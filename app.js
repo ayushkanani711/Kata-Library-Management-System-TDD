@@ -16,6 +16,8 @@ app.use(cors());
 // Connect to MongoDB
 connectToMongo();
 
+app.use("/api/books", bookRoutes);
+
 // Root route
 app.get("/", (req, res) => {
   return res.status(200).send("Server is running");
@@ -25,7 +27,6 @@ app.get("/", (req, res) => {
 app.get("/api", (req, res) => {
   return res.status(200).send("API is running");
 });
-app.use("/api/books", bookRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
