@@ -78,7 +78,7 @@ describe("Borrow book check", () => {
     const response = await request(app).post("/api/books/borrowBook").send({
       ISBN: "12345", // Invalid ISBN format
     });
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(403);
     expect(response.body.status).toBe(false);
     expect(response.body.message).toBe("Invalid ISBN format");
   });

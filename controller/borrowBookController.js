@@ -5,10 +5,10 @@ const borrowBookController = async (req, res) => {
     const { ISBN } = req.body;
 
     // Validate input
-    if (!ISBN) {
+    if (!ISBN || ISBN.length !== 13) {
       return res.status(403).json({
         status: false,
-        message: "ISBN is required",
+        message: "Invalid ISBN format",
       });
     }
 
