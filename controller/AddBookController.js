@@ -1,6 +1,6 @@
 const Book = require("../models/BookModel");
 
-const AddBookController = async (req, res) => {
+const addBookController = async (req, res) => {
   try {
     const { ISBN, title, author, yearOfPublish, available, availableCopies } =
       req.body;
@@ -91,4 +91,4 @@ const AddBookController = async (req, res) => {
   }
 };
 
-module.exports = AddBookController;
+module.exports = addBookController;
