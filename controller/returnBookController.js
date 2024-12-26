@@ -4,6 +4,9 @@ const returnBookController = async (req, res) => {
   try {
     const { ISBN } = req.body;
 
+    // Find the book by ISBN
+    const book = await Book.findOne({ ISBN });
+
     // validate input
     if (!ISBN) {
       return res.status(403).json({

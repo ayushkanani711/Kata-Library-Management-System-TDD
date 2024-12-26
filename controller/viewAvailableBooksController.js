@@ -3,6 +3,8 @@ const Book = require("../models/BookModel");
 const viewAvailableBooksController = async (req, res) => {
   try {
     const availableBooks = await Book.find({ available: true });
+
+    // If no books are available
     if (availableBooks.length === 0) {
       return res.status(404).json({
         status: false,

@@ -38,4 +38,30 @@ describe("View Available Books Check", () => {
     expect(response.body.message).toBe("Books available");
     expect(response.body.availableBooks).toEqual(mockBooks);
   });
+
+  // Test for no available books
+  test("Should return no available books message when none are available", async () => {
+    Book.find.mockResolvedValue([]);
+
+    const response = await request(app).get("/api/books/viewAvailableBooks");
+    expect(response.statusCode).toBe(404);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("Sorry, no books available");
+  });
+
+  // Test for ensuring only available books are shown
+  test("Should return only available books", async () => {
+    const books = [
+      { ISBN: "1234567890123", title: "Book 1", available: true },
+      { ISBN: "9876543210987", title: "Book 2", available: false }, // This should not be returned
+    ];
+
+    Book.find.mockResolvedValue(books.filter((book) => book.available));
+
+    const response = await request(app).get("/api/books/viewAvailableBooks");
+    expect(response.statusCode).toBe(200);
+    expect(response.body.status).toBe(true);
+    expect(response.body.message).toBe("Books available");
+    expect(response.body.availableBooks).toEqual([books[0]]);
+  });
 });
