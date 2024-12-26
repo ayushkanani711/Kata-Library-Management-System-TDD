@@ -58,7 +58,7 @@ describe("Add Book Check", () => {
   // Test for incorrect input
   test("Should restrict to add book with incorrect input", async () => {
     const response = await request(app).post("/api/books/addNewBook").send({
-      ISBN: 1234567891235,
+      ISBN: 1234567890125,
       title: "The Alchemist",
       author: "Paulo Coelho",
       yearOfPublish: 1988,

@@ -13,7 +13,7 @@ describe("Borrow book check", () => {
   // Test for borrowing a book
   test("Should handle POST request for borrowBook", async () => {
     const book = {
-      ISBN: "1234567891235",
+      ISBN: "1234567890123",
       title: "The Alchemist",
       author: "Paulo Coelho",
       yearOfPublish: 1988,
