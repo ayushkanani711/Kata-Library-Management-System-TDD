@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 
 const bookRoutes = require("./routes/bookRoutes");
-const connectToMongo = require("./config/database");
 
 // Create an express app
 const app = express();

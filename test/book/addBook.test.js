@@ -99,4 +99,36 @@ describe("Add Book Check", () => {
     expect(response.body.success).toBe(false);
     expect(response.body.message).toBe("Book should have at least 1 copy");
   });
+
+  // Test for invalid year (e.g., future years)
+  test("Should restrict adding a book with a future year of publication", async () => {
+    const response = await request(app)
+      .post("/api/books/addNewBook")
+      .send({
+        ISBN: "1234567890123",
+        title: "Future Book",
+        author: "Author Name",
+        yearOfPublish: new Date().getFullYear() + 1, // Next year
+        available: true,
+        availableCopies: 5,
+      });
+    expect(response.statusCode).toBe(403);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Invalid year of publication");
+  });
+
+  // Test for invalid boolean value for 'available'
+  test("Should restrict adding a book with non-boolean 'available' value", async () => {
+    const response = await request(app).post("/api/books/addNewBook").send({
+      ISBN: "1234567890123",
+      title: "Book with invalid availability",
+      author: "Author",
+      yearOfPublish: 2024,
+      available: "yes", // Invalid type (string instead of boolean)
+      availableCopies: 10,
+    });
+    expect(response.statusCode).toBe(403);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Incorrect input type");
+  });
 });
