@@ -51,12 +51,32 @@ const addBookController = async (req, res) => {
       });
     }
 
+    if (yearOfPublish > new Date().getFullYear()) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid year of publication",
+      });
+    }
+    if (typeof available !== "boolean") {
+      return res.status(403).json({
+        success: false,
+        message: "Incorrect input type",
+      });
+    }
+
     // Check if the book already exists
     const existingBook = await Book.findOne({ ISBN });
     if (existingBook) {
       return res.status(400).json({
         success: false,
         message: "Book already exists",
+      });
+    }
+
+    if (typeof available !== "boolean") {
+      return res.status(403).json({
+        success: false,
+        message: "Incorrect input type",
       });
     }
 
