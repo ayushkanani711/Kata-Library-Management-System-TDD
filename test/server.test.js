@@ -1,6 +1,6 @@
 const request = require("supertest");
-
-const App = "http://localhost:5001";
+require("dotenv").config();
+const App = process.env.APP_URL;
 
 describe("Server Running Check", () => {
   //
