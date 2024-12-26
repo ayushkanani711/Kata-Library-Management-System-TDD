@@ -20,11 +20,40 @@ const returnBookController = async (req, res) => {
       });
     }
 
-    return res.status(201).json({
-      status: true,
-      message: "Book returned successfully",
-    });
-  } catch {
+    const returnedBook = await Book.findOne({ ISBN });
+    if (!returnedBook) {
+      return res.status(404).json({
+        status: false,
+        message: "Book not found",
+      });
+    }
+
+    // Update available copies
+    const remainingCopies = (returnedBook.availableCopies || 0) + 1;
+    let isAvailable = remainingCopies > 0;
+
+    const updatedBook = await Book.findOneAndUpdate(
+      { ISBN },
+      {
+        availableCopies: remainingCopies,
+        available: isAvailable,
+      },
+      { new: true }
+    );
+
+    if (updatedBook) {
+      return res.status(201).json({
+        status: true,
+        message: "Book returned successfully",
+        updatedBook,
+      });
+    } else {
+      return res.status(500).json({
+        status: false,
+        message: "Failed to update the book information",
+      });
+    }
+  } catch (err) {
     console.error("Error in returnBookController:", err);
     res.status(500).json({
       status: false,
