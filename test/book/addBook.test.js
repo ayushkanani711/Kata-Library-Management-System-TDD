@@ -5,6 +5,15 @@ const Book = require("../../models/BookModel");
 // Mock the Book model
 jest.mock("../../models/BookModel");
 
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.spyOn(console, "error").mockImplementation(() => {}); // Suppress console.error
+});
+
+afterEach(() => {
+  console.error.mockRestore(); // Restore console.error after tests
+});
+
 describe("Add Book Check", () => {
   beforeEach(() => {
     book = {
@@ -124,11 +133,45 @@ describe("Add Book Check", () => {
       title: "Book with invalid availability",
       author: "Author",
       yearOfPublish: 2024,
-      available: "yes", // Invalid type (string instead of boolean)
+      available: "yes",
       availableCopies: 10,
     });
     expect(response.statusCode).toBe(403);
     expect(response.body.success).toBe(false);
     expect(response.body.message).toBe("Incorrect input type");
+  });
+
+  // Test for database error during book creation
+  test("Should handle error when failing to create a new book", async () => {
+    Book.findOne.mockResolvedValue(null);
+    Book.create.mockResolvedValue(null);
+
+    const response = await request(app)
+      .post("/api/books/addNewBook")
+      .send(book);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe(
+      "Error adding the book. Please try again!"
+    );
+  });
+
+  // Test for handling unexpected errors
+  test("Should handle unexpected errors gracefully", async () => {
+    Book.findOne.mockRejectedValue(new Error("Database error"));
+
+    const response = await request(app).post("/api/books/addNewBook").send({
+      ISBN: "1234567890123",
+      title: "The Alchemist",
+      author: "Paulo Coelho",
+      yearOfPublish: 1988,
+      available: true,
+      availableCopies: 10,
+    });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Internal server error");
   });
 });

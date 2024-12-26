@@ -57,12 +57,6 @@ const addBookController = async (req, res) => {
         message: "Invalid year of publication",
       });
     }
-    if (typeof available !== "boolean") {
-      return res.status(403).json({
-        success: false,
-        message: "Incorrect input type",
-      });
-    }
 
     // Check if the book already exists
     const existingBook = await Book.findOne({ ISBN });
@@ -70,13 +64,6 @@ const addBookController = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Book already exists",
-      });
-    }
-
-    if (typeof available !== "boolean") {
-      return res.status(403).json({
-        success: false,
-        message: "Incorrect input type",
       });
     }
 

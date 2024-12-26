@@ -8,9 +8,34 @@ jest.mock("../../models/BookModel");
 describe("Book returning check", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {}); // Suppress console.error
   });
 
-  // Test for returning a book not borrowed (not in the system)
+  afterEach(() => {
+    console.error.mockRestore(); // Restore console.error after tests
+  });
+
+  // Test for missing ISBN
+  test("Should return 403 if ISBN is missing", async () => {
+    const response = await request(app).post("/api/books/returnBook").send({});
+    expect(response.statusCode).toBe(403);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("ISBN is required");
+  });
+
+  // Test for invalid ISBN length
+  test("Should restrict returning a book with invalid ISBN length", async () => {
+    const response = await request(app).post("/api/books/returnBook").send({
+      ISBN: "1234567890", // Invalid ISBN length
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe(
+      "ISBN must be a string of 13 characters"
+    );
+  });
+
+  // Test for returning a book not borrowed
   test("Should return 404 if book is not found", async () => {
     Book.findOne.mockResolvedValue(null);
 
@@ -63,5 +88,35 @@ describe("Book returning check", () => {
     expect(response.body.message).toBe(
       "ISBN must be a string of 13 characters"
     );
+  });
+
+  // Test for failed update operation
+  test("Should return 500 if book information fails to update", async () => {
+    Book.findOne.mockResolvedValue({
+      ISBN: "1234567890123",
+      availableCopies: 9,
+    });
+    Book.findOneAndUpdate.mockResolvedValue(null);
+
+    const response = await request(app).post("/api/books/returnBook").send({
+      ISBN: "1234567890123",
+    });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("Failed to update the book information");
+  });
+
+  // Test for internal server error
+  test("Should handle unexpected errors gracefully", async () => {
+    Book.findOne.mockRejectedValue(new Error("Database error"));
+
+    const response = await request(app).post("/api/books/returnBook").send({
+      ISBN: "1234567890123",
+    });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("Internal server error");
   });
 });

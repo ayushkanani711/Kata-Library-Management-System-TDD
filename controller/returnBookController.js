@@ -32,7 +32,7 @@ const returnBookController = async (req, res) => {
     }
 
     // Update available copies
-    const remainingCopies = (returnedBook.availableCopies || 0) + 1;
+    const remainingCopies = returnedBook.availableCopies + 1;
     let isAvailable = remainingCopies > 0;
 
     const updatedBook = await Book.findOneAndUpdate(

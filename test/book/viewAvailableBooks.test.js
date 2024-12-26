@@ -26,6 +26,11 @@ describe("View Available Books Check", () => {
 
     // Clear mocks before each test
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {}); // Suppress console.error
+  });
+
+  afterEach(() => {
+    console.error.mockRestore(); // Restore console.error after tests
   });
 
   // Test for fetching available books
@@ -63,5 +68,15 @@ describe("View Available Books Check", () => {
     expect(response.body.status).toBe(true);
     expect(response.body.message).toBe("Books available");
     expect(response.body.availableBooks).toEqual([books[0]]);
+  });
+
+  // Test for internal server error
+  test("Should handle internal server error", async () => {
+    Book.find.mockRejectedValue(new Error("Database error"));
+
+    const response = await request(app).get("/api/books/viewAvailableBooks");
+    expect(response.statusCode).toBe(500);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("Internal server error");
   });
 });

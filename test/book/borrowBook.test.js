@@ -8,6 +8,11 @@ jest.mock("../../models/BookModel");
 describe("Borrow book check", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {}); // Suppress console.error
+  });
+
+  afterEach(() => {
+    console.error.mockRestore(); // Restore console.error after tests
   });
 
   // Test for borrowing a book
@@ -101,5 +106,18 @@ describe("Borrow book check", () => {
     expect(response.body.message).toBe(
       "Book stock is not available in the library"
     );
+  });
+
+  // Test for handling unexpected errors
+  test("Should handle unexpected errors", async () => {
+    Book.findOne.mockRejectedValue(new Error("Database error"));
+
+    const response = await request(app).post("/api/books/borrowBook").send({
+      ISBN: "1234567890123",
+    });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("Internal server error");
   });
 });
