@@ -5,7 +5,7 @@ const App = "http://localhost:5001";
 describe("Add Book Check", () => {
   test("Should handle POST request", async () => {
     const book = {
-      ISBN: "1234567891234",
+      ISBN: "1234567891236",
       title: "The Alchemist",
       author: "Paulo Coelho",
       yearOfPublish: 1988,
