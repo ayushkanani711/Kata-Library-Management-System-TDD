@@ -72,4 +72,34 @@ describe("Borrow book check", () => {
       "Book stock is not available in the library"
     );
   });
+
+  // Test for invalid ISBN format
+  test("Should restrict borrowing with invalid ISBN format", async () => {
+    const response = await request(app).post("/api/books/borrowBook").send({
+      ISBN: "12345", // Invalid ISBN format
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe("Invalid ISBN format");
+  });
+
+  // Test for borrowing a book when stock reaches zero
+  test("Should restrict borrowing if book stock reaches zero", async () => {
+    const book = {
+      ISBN: "1234567890123",
+      title: "Book with no stock",
+      availableCopies: 0,
+    };
+    Book.findOne.mockResolvedValue(book);
+
+    const response = await request(app).post("/api/books/borrowBook").send({
+      ISBN: "1234567890123",
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe(
+      "Book stock is not available in the library"
+    );
+  });
 });
