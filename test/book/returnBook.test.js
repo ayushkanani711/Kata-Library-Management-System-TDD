@@ -10,7 +10,7 @@ describe("Book returning check", () => {
     jest.clearAllMocks();
   });
 
-  // Test case 1
+  // Test for returning a book not borrowed (not in the system)
   test("Should return 404 if book is not found", async () => {
     Book.findOne.mockResolvedValue(null);
 
@@ -27,7 +27,7 @@ describe("Book returning check", () => {
     expect(response.body.message).toBe("Book not found");
   });
 
-  // Test case 2
+  // Test for returning a book that is not borrowed
   test("Should handle POST request for return book", async () => {
     Book.findOne.mockResolvedValue({
       ISBN: "1234567890123",
@@ -51,5 +51,17 @@ describe("Book returning check", () => {
     expect(response.body.status).toBe(true);
     expect(response.body.message).toBe("Book returned successfully");
     expect(response.body.updatedBook.availableCopies).toBe(10);
+  });
+
+  // Test for invalid ISBN length
+  test("Should restrict returning a book with invalid ISBN length", async () => {
+    const response = await request(app).post("/api/books/returnBook").send({
+      ISBN: "1234567890", // Invalid ISBN length
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.status).toBe(false);
+    expect(response.body.message).toBe(
+      "ISBN must be a string of 13 characters"
+    );
   });
 });
