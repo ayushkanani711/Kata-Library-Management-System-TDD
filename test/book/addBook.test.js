@@ -3,9 +3,10 @@ require("dotenv").config();
 const App = process.env.APP_URL;
 
 describe("Add Book Check", () => {
+  // Add book
   test("Should handle POST request", async () => {
     const book = {
-      ISBN: "1234567891238",
+      ISBN: "1234567891235",
       title: "The Alchemist",
       author: "Paulo Coelho",
       yearOfPublish: 1988,
@@ -21,9 +22,10 @@ describe("Add Book Check", () => {
     console.log("Book added successfully");
   });
 
+  // Restrict to add existing book
   test("Should restrict to add existing book", async () => {
     const book = {
-      ISBN: "1234567891234",
+      ISBN: "1234567891235",
       title: "The Alchemist",
       author: "Paulo Coelho",
       yearOfPublish: 1988,
